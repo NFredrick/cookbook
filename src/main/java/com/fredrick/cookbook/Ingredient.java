@@ -18,4 +18,8 @@ public class Ingredient {
         this.name = name;
         this.foodGroup = foodGroup;
     }
+
+    public Ingredient() {
+
+    }
 }

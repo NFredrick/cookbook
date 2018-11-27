@@ -1,38 +1,65 @@
 package com.fredrick.cookbook;
 
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
 public class IngredientController {
 
     private final IngredientRepository repository;
+    private final IngredientResourceAssembler assembler;
 
-    public IngredientController(IngredientRepository repository) {
+    public IngredientController(IngredientRepository repository,
+                                IngredientResourceAssembler assembler) {
         this.repository = repository;
+        this.assembler = assembler;
     }
 
     @GetMapping("/ingredients")
-    List<Ingredient> all() {
-        return repository.findAll();
+    Resources<Resource<Ingredient>> all() {
+        List<Resource<Ingredient>> ingredients = repository.findAll()
+                .stream()
+                .map(assembler::toResource)
+                .collect(Collectors.toList());
+
+        return new Resources<>(ingredients,
+                linkTo(methodOn(IngredientController.class).all()).withSelfRel());
+
     }
 
     @PostMapping("/ingredients")
-    Ingredient newIngredient(@RequestBody Ingredient newIngredient) {
-        return repository.save(newIngredient);
+    ResponseEntity<?> newIngredient(@RequestBody Ingredient newIngredient) throws URISyntaxException {
+
+        Resource<Ingredient> resource = assembler.toResource(repository.save(newIngredient));
+        return ResponseEntity
+                .created(new URI(resource.getId().expand().getHref()))
+                .body(resource);
     }
 
     @GetMapping("/ingredients/{id}")
-    Ingredient one(@PathVariable Long id) {
-        return repository.findById(id)
+    Resource<Ingredient> one(@PathVariable Long id) {
+
+        Ingredient ingredient = repository.findById(id)
                 .orElseThrow(() -> new IngredientNotFoundException(id));
+
+        return assembler.toResource(ingredient);
     }
 
     @PutMapping("/ingredients/{id}")
-    Ingredient replaceIngredient(@RequestBody Ingredient newIngredient, @PathVariable Long id) {
+    ResponseEntity<?> replaceIngredient(@RequestBody Ingredient newIngredient, @PathVariable Long id) throws URISyntaxException{
 
-        return repository.findById(id)
+        Ingredient updatedIngredient = repository.findById(id)
                 .map(ingredient -> {
                     ingredient.setName(newIngredient.getName());
                     ingredient.setFoodGroup(newIngredient.getFoodGroup());
@@ -42,11 +69,19 @@ public class IngredientController {
                     newIngredient.setId(id);
                     return repository.save(newIngredient);
                 });
+
+        Resource<Ingredient> resource = assembler.toResource(updatedIngredient);
+
+        return ResponseEntity
+                .created(new URI(resource.getId().expand().getHref()))
+                .body(resource);
     }
 
     @DeleteMapping("/ingredients/{id}")
-    void deleteIngredient(@PathVariable Long id) {
+    ResponseEntity<?> deleteIngredient(@PathVariable Long id) {
         repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
