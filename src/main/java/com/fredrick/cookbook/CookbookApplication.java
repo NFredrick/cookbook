@@ -24,9 +24,9 @@ public class CookbookApplication implements CommandLineRunner {
 	@Override
     @Transactional
     public void run(String... strings) throws Exception {
-        Ingredient pb = new Ingredient("peanut butter", "protein");
-        Ingredient jelly = new Ingredient("jelly", "sugar");
-        Ingredient bread = new Ingredient("bread", "grain");
+        Ingredient pb = new Ingredient("peanut butter");
+        Ingredient jelly = new Ingredient("jelly");
+        Ingredient bread = new Ingredient("bread");
 
         recipeRepository.saveAll(new ArrayList<Recipe>(){{
             add(new Recipe("pb&j sandwich", new ArrayList<Ingredient>(){{

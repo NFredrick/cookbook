@@ -13,16 +13,14 @@ public class Ingredient {
 
     private @Id @GeneratedValue Long id;
     private String name;
-    private String foodGroup;
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "ingredients")
     @JsonBackReference
     private List<Recipe> recipes;
 
-    public Ingredient(String name, String foodGroup) {
+    public Ingredient(String name) {
         this.name = name;
-        this.foodGroup = foodGroup;
     }
 
     public Ingredient() {

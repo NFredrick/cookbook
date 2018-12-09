@@ -61,7 +61,6 @@ public class IngredientController {
         Ingredient updatedIngredient = repository.findById(id)
                 .map(ingredient -> {
                     ingredient.setName(newIngredient.getName());
-                    ingredient.setFoodGroup(newIngredient.getFoodGroup());
                     return repository.save(ingredient);
                 })
                 .orElseGet(() -> {
