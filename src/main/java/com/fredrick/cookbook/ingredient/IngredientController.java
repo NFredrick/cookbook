@@ -1,4 +1,4 @@
-package com.fredrick.cookbook;
+package com.fredrick.cookbook.ingredient;
 
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
@@ -61,6 +61,8 @@ public class IngredientController {
         Ingredient updatedIngredient = repository.findById(id)
                 .map(ingredient -> {
                     ingredient.setName(newIngredient.getName());
+                    ingredient.setAmount(newIngredient.getAmount());
+                    ingredient.setUnits(newIngredient.getUnits());
                     return repository.save(ingredient);
                 })
                 .orElseGet(() -> {

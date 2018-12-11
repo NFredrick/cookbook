@@ -1,4 +1,4 @@
-package com.fredrick.cookbook;
+package com.fredrick.cookbook.ingredient;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

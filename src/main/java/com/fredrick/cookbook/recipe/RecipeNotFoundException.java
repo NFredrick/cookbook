@@ -1,4 +1,4 @@
-package com.fredrick.cookbook;
+package com.fredrick.cookbook.recipe;
 
 public class RecipeNotFoundException extends RuntimeException{
 

@@ -1,5 +1,9 @@
 package com.fredrick.cookbook;
 
+import com.fredrick.cookbook.ingredient.Ingredient;
+import com.fredrick.cookbook.ingredient.IngredientRepository;
+import com.fredrick.cookbook.recipe.Recipe;
+import com.fredrick.cookbook.recipe.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,9 +28,9 @@ public class CookbookApplication implements CommandLineRunner {
 	@Override
     @Transactional
     public void run(String... strings) throws Exception {
-        Ingredient pb = new Ingredient("peanut butter");
-        Ingredient jelly = new Ingredient("jelly");
-        Ingredient bread = new Ingredient("bread");
+        Ingredient pb = new Ingredient("peanut butter", 3.0, "tbsp");
+        Ingredient jelly = new Ingredient("jelly", 2.0, "tbsp");
+        Ingredient bread = new Ingredient("bread", 2.0, "slices");
 
         recipeRepository.saveAll(new ArrayList<Recipe>(){{
             add(new Recipe("pb&j sandwich", new ArrayList<Ingredient>(){{

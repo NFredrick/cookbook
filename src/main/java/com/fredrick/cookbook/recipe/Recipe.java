@@ -1,6 +1,7 @@
-package com.fredrick.cookbook;
+package com.fredrick.cookbook.recipe;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fredrick.cookbook.ingredient.Ingredient;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,12 +14,9 @@ public class Recipe {
 
     private @Id @GeneratedValue Long id;
     private String name;
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                CascadeType.PERSIST, CascadeType.MERGE
-            })
-    @JoinTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
-    @JsonManagedReference
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
     private List<Ingredient> ingredients;
 
     public Recipe(String name, List<Ingredient> ingredients) {
